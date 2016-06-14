@@ -2,10 +2,9 @@ from __future__ import absolute_import
 
 from functools import wraps
 
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 
 from ratelimit import ALL, UNSAFE
-from ratelimit.exceptions import Ratelimited
 from ratelimit.utils import is_ratelimited
 
 
@@ -26,7 +25,10 @@ def ratelimit(group=None, key=None, rate=None, method=ALL, block=False):
                                          key=key, rate=rate, method=method,
                                          increment=True)
             if ratelimited and block:
-                raise Ratelimited()
+                return HttpResponse(
+                    'HTTP Error 429: Too Many Requests. There are an unusual number of requests coming from this IP address. Let\'s discover our plans in the Fever mobile app.',
+                    status=429
+                )
             return fn(*args, **kw)
         return _wrapped
     return decorator
