@@ -26,7 +26,7 @@ def ratelimit(group=None, key=None, rate=None, method=ALL, block=False):
                                          increment=True)
             if ratelimited and block:
                 return HttpResponse(
-                    'HTTP Error 429: Too Many Requests. There are an unusual number of requests coming from this IP address. Let\'s discover our plans in the Fever mobile app.',
+                    'HTTP Error 429: Too Many Requests. There are an unusual number of requests coming from this IP address {ip_address}. Let\'s discover our plans in the Fever mobile app.'.format(ip_address=request.META.get('REMOTE_ADDR')),
                     status=429
                 )
             return fn(*args, **kw)
